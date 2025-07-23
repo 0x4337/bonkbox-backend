@@ -2,12 +2,13 @@ import { FeeManagerService } from "../../services/feeManagerService.js";
 import { Router } from "express";
 import BN from "bn.js";
 import { drawState } from "../../state/drawState.js";
+import { webSocketService } from "../../services/websocketService.js";
 
 const router = Router();
 
 const feeManagerService = new FeeManagerService();
 
-let inMemoryFeeData = {
+export let inMemoryFeeData = {
   creatorBaseFee: new BN(0),
   creatorQuoteFee: new BN(0),
   estimatedBonkAmount: 0,
@@ -40,6 +41,17 @@ async function fetchFeeData() {
   inMemoryFeeData.estimatedBonkAmount = estimatedBonkAmount;
   inMemoryFeeData.creatorBaseFee = creatorBaseFee;
   inMemoryFeeData.creatorQuoteFee = creatorQuoteFee;
+
+  // Broadcast the new fee data
+  webSocketService.broadcast({
+    type: "feesUpdate",
+    data: {
+      creatorBaseFee: inMemoryFeeData.creatorBaseFee.toString(),
+      creatorQuoteFee: inMemoryFeeData.creatorQuoteFee.toString(),
+      estimatedBonkAmount: inMemoryFeeData.estimatedBonkAmount,
+      estimatedUsdValue: inMemoryFeeData.estimatedUsdValue,
+    },
+  });
 }
 
 fetchFeeData();

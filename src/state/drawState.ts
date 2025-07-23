@@ -1,11 +1,14 @@
 import { DrawResult } from "../services/drawEngine.js";
+import EventEmitter from "events";
 
-// This object holds the live state of our application.
-export const drawState: {
+export interface DrawState {
   currentState: "WAITING" | "EXECUTING" | "ANNOUNCING";
   nextDrawTime: Date;
   lastDrawResult: DrawResult | null;
-} = {
+}
+
+// This object holds the live state of our application.
+export const drawState: DrawState = {
   // Can be 'WAITING', 'EXECUTING', or 'ANNOUNCING'
   currentState: "WAITING",
 
@@ -16,6 +19,9 @@ export const drawState: {
   lastDrawResult: null, // Will hold winner's address, prize, etc.
 };
 
+// Event emitter for draw state changes
+export const drawStateEvents = new EventEmitter();
+
 // Helper function: Calculate the next draw time (every 30 minutes, on :00 or :30)
 function getNextDrawTime(): Date {
   const now = new Date();
@@ -25,11 +31,11 @@ function getNextDrawTime(): Date {
   let nextMinute: number;
   let nextHour = currentHour;
 
-  if (currentMinute < 40) {
+  if (currentMinute < 30) {
     // If before :35, next is :35 of current hour
-    nextMinute = 40;
+    nextMinute = 30;
   } else {
-    // If at or after :40, next is :00 of next hour
+    // If at or after :30, next is :00 of next hour
     nextMinute = 0;
     nextHour = (currentHour + 1) % 24; // Wrap around at midnight
   }
@@ -37,9 +43,9 @@ function getNextDrawTime(): Date {
   // Create the Date object for the next draw
   const next = new Date(now.getFullYear(), now.getMonth(), now.getDate(), nextHour, nextMinute, 0, 0);
 
-  // If the calculated time is in the past (edge case, like exactly at :40:00), add 40 minutes
+  // If the calculated time is in the past (edge case, like exactly at :30:00), add 30 minutes
   if (next <= now) {
-    next.setMinutes(next.getMinutes() + 40);
+    next.setMinutes(next.getMinutes() + 30);
   }
 
   console.log("[DRAW TIME] Next draw time:", next);
@@ -50,12 +56,14 @@ function getNextDrawTime(): Date {
 export function startDrawExecution() {
   drawState.currentState = "EXECUTING";
   drawState.lastDrawResult = null;
+  drawStateEvents.emit("stateChanged", { ...drawState });
 }
 
 // In announceWinner, start the timeout HERE (not in resetToWaiting)
 export function announceWinner(drawResultData: DrawResult) {
   drawState.currentState = "ANNOUNCING";
   drawState.lastDrawResult = drawResultData;
+  drawStateEvents.emit("stateChanged", { ...drawState });
 
   // After 1 minute, reset
   setTimeout(() => {
@@ -68,4 +76,5 @@ export function resetToWaiting() {
   drawState.currentState = "WAITING";
   drawState.nextDrawTime = getNextDrawTime(); // Update to the NEW next time
   drawState.lastDrawResult = null;
+  drawStateEvents.emit("stateChanged", { ...drawState });
 }
