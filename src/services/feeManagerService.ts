@@ -14,7 +14,7 @@ class FeeManagerService {
   constructor() {
     this.connection = new Connection(process.env.RPC_URL as string, "confirmed");
     this.dbcClient = new DynamicBondingCurveClient(this.connection, "confirmed");
-    this.poolAddress = new PublicKey("7sMvLkC77BJxAvrc3QpdPPoDPeAz54HDSDUucgpnQCp3"); // TODO: NEEDS CHANGING
+    this.poolAddress = new PublicKey("8XjEStrzsN1w8u1dggpFofRjxQu5edRpwaY5gSmXwgQA"); // TODO: NEEDS CHANGING
     this.keypair = Keypair.fromSecretKey(Uint8Array.from(JSON.parse(process.env.LAUNCH_WALLET as string)));
   }
 
