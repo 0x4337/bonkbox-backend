@@ -94,7 +94,7 @@ class FeeManagerService {
     this.connection = new Connection(process.env.RPC_URL as string, "confirmed");
     this.dbcClient = new DynamicBondingCurveClient(this.connection, "confirmed");
     this.cpAmm = new CpAmm(this.connection); // Initialize DAMM v2 client
-    this.poolAddress = new PublicKey("8XjEStrzsN1w8u1dggpFofRjxQu5edRpwaY5gSmXwgQA"); // TODO: NEEDS CHANGING (DBC)
+    this.poolAddress = new PublicKey("HAo56a9rJuwQtnoMgu1Npc7jGFoMSFTKuGN5gSNYjsKs"); // TODO: NEEDS CHANGING (DBC)
     this.newPoolAddress = new PublicKey("8XjEStrzsN1w8u1dggpFofRjxQu5edRpwaY5gSmXwgQA"); // Hardcode after migration
     this.positionAddress = new PublicKey("8XjEStrzsN1w8u1dggpFofRjxQu5edRpwaY5gSmXwgQA"); // Hardcode after running fetch script
     this.keypair = Keypair.fromSecretKey(Uint8Array.from(JSON.parse(process.env.LAUNCH_WALLET as string)));
