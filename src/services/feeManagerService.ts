@@ -81,7 +81,7 @@ import { TOKEN_PROGRAM_ID } from "@solana/spl-token"; // Assuming standard token
 dotenv.config();
 
 class FeeManagerService {
-  private mode: "dbc" | "dammv2" = "dbc"; // Flip to 'dammv2' post-migration and redeploy
+  private mode: "dbc" | "dammv2" = "dammv2"; // Flip to 'dammv2' post-migration and redeploy
   private connection: Connection;
   private dbcClient: DynamicBondingCurveClient;
   private cpAmm: CpAmm; // For DAMM v2
@@ -95,8 +95,8 @@ class FeeManagerService {
     this.dbcClient = new DynamicBondingCurveClient(this.connection, "confirmed");
     this.cpAmm = new CpAmm(this.connection); // Initialize DAMM v2 client
     this.poolAddress = new PublicKey("HAo56a9rJuwQtnoMgu1Npc7jGFoMSFTKuGN5gSNYjsKs"); // TODO: NEEDS CHANGING (DBC)
-    this.newPoolAddress = new PublicKey("8XjEStrzsN1w8u1dggpFofRjxQu5edRpwaY5gSmXwgQA"); // Hardcode after migration
-    this.positionAddress = new PublicKey("8XjEStrzsN1w8u1dggpFofRjxQu5edRpwaY5gSmXwgQA"); // Hardcode after running fetch script
+    this.newPoolAddress = new PublicKey("3VJLx1UCMQqqn8abE9cV9gkzyETpf8EPDDYiYoMNNYRb"); // Hardcode after migration
+    this.positionAddress = new PublicKey("8YUeYZq2Nax15Fou2Qb9dEDGGcndaoXnofQ2ryqhEdgf"); // Hardcode after running fetch script
     this.keypair = Keypair.fromSecretKey(Uint8Array.from(JSON.parse(process.env.LAUNCH_WALLET as string)));
   }
 
