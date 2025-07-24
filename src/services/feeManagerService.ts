@@ -110,10 +110,6 @@ class FeeManagerService {
       console.log("[FEES] Creator Quote Fee:", creatorQuoteFee.toString(), "lamports");
       console.log("[FEES] SOL Value:", (creatorQuoteFee.toNumber() / 1e9).toFixed(9), "SOL");
 
-      if (creatorQuoteFee.isZero()) {
-        throw new Error("[FEES] Creator Quote Fee is zero, nothing to claim.");
-      }
-
       return { creatorBaseFee, creatorQuoteFee };
     } else {
       // DAMM v2: Fetch position state to get accrued fees
@@ -131,6 +127,10 @@ class FeeManagerService {
     console.log("[FEES] Creating fee claim transaction...");
     let claimTx: Transaction;
     if (this.mode === "dbc") {
+      if (creatorQuoteFee.isZero()) {
+        throw new Error("[FEES] Creator Quote Fee is zero, nothing to claim.");
+      }
+
       claimTx = await this.dbcClient.creator.claimCreatorTradingFee({
         creator: this.keypair.publicKey,
         payer: this.keypair.publicKey,
