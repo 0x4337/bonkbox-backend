@@ -23,25 +23,67 @@ class VrfService {
     this.vrf = new Orao(provider);
   }
 
-  async generateVerifiableRandomNumber() {
-    console.log("[VRF] Sending request for VRF...");
-    // Request randomness and send the transaction
-    const [seed, requestTxSignature] = await (await this.vrf.request()).rpc();
-    console.log(`[VRF] Request sent: ${requestTxSignature}`);
+  // async generateVerifiableRandomNumber() {
+  //   console.log("[VRF] Sending request for VRF...");
+  //   // Request randomness and send the transaction
+  //   const [seed, requestTxSignature] = await (await this.vrf.request()).rpc();
+  //   console.log(`[VRF] Request sent: ${requestTxSignature}`);
 
-    console.log("[VRF] Allowing network time to sync...");
-    await sleep(2500);
+  //   console.log("[VRF] Allowing network time to sync...");
+  //   await sleep(2500);
 
-    console.log("[VRF] Waiting for fulfillment...");
-    const randomness = await this.vrf.waitFulfilled(seed);
+  //   console.log("[VRF] Waiting for fulfillment...");
+  //   const randomness = await this.vrf.waitFulfilled(seed);
 
-    console.log("[VRF] Fulfillment received");
+  //   console.log("[VRF] Fulfillment received");
 
-    const randomNumber = BigInt("0x" + Buffer.from(randomness.randomness).toString("hex"));
+  //   const randomNumber = BigInt("0x" + Buffer.from(randomness.randomness).toString("hex"));
 
-    const vrfAccountAddress = randomnessAccountAddress(seed);
-    const vrfRequestTxSignature = requestTxSignature;
-    return { randomNumber, vrfRequestTxSignature, vrfAccountAddress };
+  //   const vrfAccountAddress = randomnessAccountAddress(seed);
+  //   const vrfRequestTxSignature = requestTxSignature;
+  //   return { randomNumber, vrfRequestTxSignature, vrfAccountAddress };
+  // }
+
+  async generateVerifiableRandomNumber(maxRetries = 3, timeoutMs = 60000) {
+    let attempts = 0;
+
+    while (attempts < maxRetries) {
+      attempts++;
+      console.log(`[VRF] Sending request for VRF (attempt ${attempts})...`);
+
+      // Request randomness and send the transaction
+      const [seed, requestTxSignature] = await (await this.vrf.request()).rpc();
+      console.log(`[VRF] Request sent: ${requestTxSignature}`);
+
+      console.log("[VRF] Allowing network time to sync...");
+      await sleep(2500);
+
+      console.log("[VRF] Waiting for fulfillment...");
+
+      // Create a promise that will reject if waitFulfilled takes too long
+      const fulfillmentPromise = this.vrf.waitFulfilled(seed);
+      const timeoutPromise = new Promise<never>((_, reject) => setTimeout(() => reject(new Error("waitFulfilled timeout")), timeoutMs));
+
+      try {
+        const randomness = await Promise.race([fulfillmentPromise, timeoutPromise]);
+        console.log("[VRF] Fulfillment received");
+
+        const randomNumber = BigInt("0x" + Buffer.from(randomness.randomness).toString("hex"));
+        const vrfAccountAddress = randomnessAccountAddress(seed);
+        const vrfRequestTxSignature = requestTxSignature;
+
+        return { randomNumber, vrfRequestTxSignature, vrfAccountAddress };
+      } catch (error: any) {
+        console.log(`[VRF] Attempt ${attempts} failed or timed out:`, error.message);
+        if (attempts >= maxRetries) {
+          throw new Error(`Failed to get VRF fulfillment after ${maxRetries} attempts`);
+        }
+        // If not the final attempt, the loop will continue to retry
+      }
+    }
+
+    // This should never be reached due to the throw above, but TypeScript needs it
+    throw new Error("Unexpected error in VRF generation");
   }
 }
 
