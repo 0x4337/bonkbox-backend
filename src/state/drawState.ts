@@ -31,11 +31,11 @@ function getNextDrawTime(): Date {
   let nextMinute: number;
   let nextHour = currentHour;
 
-  if (currentMinute < 30) {
+  if (currentMinute < 45) {
     // If before :35, next is :35 of current hour
-    nextMinute = 30;
+    nextMinute = 45;
   } else {
-    // If at or after :30, next is :00 of next hour
+    // If at or after :45, next is :00 of next hour
     nextMinute = 0;
     nextHour = (currentHour + 1) % 24; // Wrap around at midnight
   }
@@ -43,9 +43,9 @@ function getNextDrawTime(): Date {
   // Create the Date object for the next draw
   const next = new Date(now.getFullYear(), now.getMonth(), now.getDate(), nextHour, nextMinute, 0, 0);
 
-  // If the calculated time is in the past (edge case, like exactly at :30:00), add 30 minutes
+  // If the calculated time is in the past (edge case, like exactly at :45:00), add 45 minutes
   if (next <= now) {
-    next.setMinutes(next.getMinutes() + 30);
+    next.setMinutes(next.getMinutes() + 45);
   }
 
   console.log("[DRAW TIME] Next draw time:", next);
