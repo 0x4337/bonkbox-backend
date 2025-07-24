@@ -109,6 +109,11 @@ class FeeManagerService {
       console.log("[FEES] Creator Base Fee:", creatorBaseFee.toString(), "tokens");
       console.log("[FEES] Creator Quote Fee:", creatorQuoteFee.toString(), "lamports");
       console.log("[FEES] SOL Value:", (creatorQuoteFee.toNumber() / 1e9).toFixed(9), "SOL");
+
+      if (creatorQuoteFee.isZero()) {
+        throw new Error("[FEES] Creator Quote Fee is zero, nothing to claim.");
+      }
+
       return { creatorBaseFee, creatorQuoteFee };
     } else {
       // DAMM v2: Fetch position state to get accrued fees
