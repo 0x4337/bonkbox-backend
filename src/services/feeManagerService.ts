@@ -95,8 +95,8 @@ class FeeManagerService {
     this.dbcClient = new DynamicBondingCurveClient(this.connection, "confirmed");
     this.cpAmm = new CpAmm(this.connection); // Initialize DAMM v2 client
     this.poolAddress = new PublicKey("8XjEStrzsN1w8u1dggpFofRjxQu5edRpwaY5gSmXwgQA"); // TODO: NEEDS CHANGING (DBC)
-    this.newPoolAddress = new PublicKey("PLACEHOLDER_DAMM_V2_POOL_ADDRESS"); // Hardcode after migration
-    this.positionAddress = new PublicKey("PLACEHOLDER_POSITION_ADDRESS"); // Hardcode after running fetch script
+    this.newPoolAddress = new PublicKey("8XjEStrzsN1w8u1dggpFofRjxQu5edRpwaY5gSmXwgQA"); // Hardcode after migration
+    this.positionAddress = new PublicKey("8XjEStrzsN1w8u1dggpFofRjxQu5edRpwaY5gSmXwgQA"); // Hardcode after running fetch script
     this.keypair = Keypair.fromSecretKey(Uint8Array.from(JSON.parse(process.env.LAUNCH_WALLET as string)));
   }
 
