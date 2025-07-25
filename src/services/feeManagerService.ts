@@ -11,7 +11,7 @@ import { TOKEN_PROGRAM_ID } from "@solana/spl-token"; // Assuming standard token
 dotenv.config();
 
 class FeeManagerService {
-  private mode: "dbc" | "dammv2" | "restart" = "restart"; // Flip back to dammv2 after restart draw
+  private mode: "dbc" | "dammv2" | "restart" = "dammv2"; // Flip back to dammv2 after restart draw
   private connection: Connection;
   private dbcClient: DynamicBondingCurveClient;
   private cpAmm: CpAmm; // For DAMM v2
