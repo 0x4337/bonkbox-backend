@@ -23,27 +23,6 @@ class VrfService {
     this.vrf = new Orao(provider);
   }
 
-  // async generateVerifiableRandomNumber() {
-  //   console.log("[VRF] Sending request for VRF...");
-  //   // Request randomness and send the transaction
-  //   const [seed, requestTxSignature] = await (await this.vrf.request()).rpc();
-  //   console.log(`[VRF] Request sent: ${requestTxSignature}`);
-
-  //   console.log("[VRF] Allowing network time to sync...");
-  //   await sleep(2500);
-
-  //   console.log("[VRF] Waiting for fulfillment...");
-  //   const randomness = await this.vrf.waitFulfilled(seed);
-
-  //   console.log("[VRF] Fulfillment received");
-
-  //   const randomNumber = BigInt("0x" + Buffer.from(randomness.randomness).toString("hex"));
-
-  //   const vrfAccountAddress = randomnessAccountAddress(seed);
-  //   const vrfRequestTxSignature = requestTxSignature;
-  //   return { randomNumber, vrfRequestTxSignature, vrfAccountAddress };
-  // }
-
   async generateVerifiableRandomNumber(maxRetries = 3, timeoutMs = 60000) {
     let attempts = 0;
 
@@ -88,18 +67,3 @@ class VrfService {
 }
 
 export { VrfService };
-
-// (async () => {
-//   const vrfService = new VrfService();
-//   try {
-//     console.log("Requesting randomness from VRF...");
-//     const { randomNumber, vrfAccountAddress, requestTxSignature } = await vrfService.generateRandomness();
-//     console.log("Random number generated:", randomNumber.toString());
-//     const ticketNumber = randomNumber % 100000n;
-//     console.log("Ticket number generated:", ticketNumber.toString());
-//     console.log("Request Transaction Signature:", requestTxSignature.toString());
-//     console.log("VRF Account Address:", vrfAccountAddress.toString());
-//   } catch (error) {
-//     console.error("Error generating randomness:", error);
-//   }
-// })();

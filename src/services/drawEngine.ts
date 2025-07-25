@@ -48,7 +48,7 @@ class DrawEngine {
 
   async executeDraw(): Promise<DrawResult> {
     // 1. Take snapshot
-    const snapshot = await this.snapshotService.takeSnapshot("DpJAoi4aCyzePWvvgrxQFRdLgHZQGf7SfUSo4wLUgeci", ["ahFQfXL4GX5YWpDNjZR1ewVw63SHCRsJ7KXxGC4j5EY", "FhVo3mqL8PW5pH5U2CN4XE33DokiyZnUwuGpH2hmHLuM"]); // TODO: NEEDS CHANGING
+    const snapshot = await this.snapshotService.takeSnapshot("DpJAoi4aCyzePWvvgrxQFRdLgHZQGf7SfUSo4wLUgeci", ["ahFQfXL4GX5YWpDNjZR1ewVw63SHCRsJ7KXxGC4j5EY", "HLnpSz9h2S4hiLQ43rnSD9XkcUThA7B8hQMKmDaiTLcC"]); // TODO: NEEDS CHANGING
 
     // 2. Generate VRF
     const { randomNumber, vrfRequestTxSignature, vrfAccountAddress } = await this.vrfService.generateVerifiableRandomNumber();
